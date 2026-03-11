@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sathish Gilakathula — Sr. API Developer</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f5f0e8;
+      --bg2: #ede8de;
+      --bg3: #e3dbd0;
+      --border: #c8bfaa;
+      --accent: #8b5e3c;
+      --accent2: #4a7c59;
+      --accent3: #b84a3a;
+      --accent4: #6b5b9e;
+      --gold: #7a5c00;
+      --text: #3a322a;
+      --muted: #8a7966;
+      --bright: #1a1208;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-display: 'Syne', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      line-height: 1.7;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* CURSOR */
+    .cursor {
+      position: fixed; width: 8px; height: 8px;
+      background: var(--accent); border-radius: 50%;
+      pointer-events: none; z-index: 9999;
+    }
+    .cursor-ring {
+      position: fixed; width: 32px; height: 32px;
+      border: 1.5px solid rgba(139,94,60,0.45); border-radius: 50%;
+      pointer-events: none; z-index: 9998;
+      transition: width 0.2s, height 0.2s;
+    }
+
+    /* SUBTLE GRID BG */
+    body::after {
+      content: ''; position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(139,94,60,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139,94,60,0.07) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none; z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      padding: 0 2.5rem; height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(245,240,232,0.93);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-family: var(--font-mono); font-size: 13px; color: var(--accent); letter-spacing: 0.04em; }
+    .nav-logo span { color: var(--muted); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none;
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; transition: color 0.2s;
+    }
+    .nav-links a::before { content: '// '; color: var(--border); transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+    .nav-links a:hover::before, .nav-links a.active::before { color: var(--accent); }
+    .nav-status { display: flex; align-items: center; gap: 0.5rem; font-size: 11px; color: var(--muted); }
+    .status-dot { width: 6px; height: 6px; background: var(--accent2); border-radius: 50%; animation: blink 2s ease-in-out infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+    /* SECTIONS */
+    section {
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: 0 auto; padding: 6rem 2.5rem;
+    }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding-top: 80px;
+    }
+    .hero-tag {
+      font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .hero-tag::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--accent); }
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 800; line-height: 0.92; letter-spacing: -0.03em;
+      color: var(--bright); margin-bottom: 0.15em;
+    }
+    h1 .dim { color: var(--muted); }
+    h1 .accent-text { color: var(--accent); }
+    .hero-role {
+      font-size: clamp(0.75rem, 1.2vw, 0.95rem);
+      color: var(--accent2); letter-spacing: 0.08em;
+      margin-top: 0.75rem; margin-bottom: 1.25rem;
+    }
+    .hero-sub {
+      font-size: clamp(0.78rem, 1.2vw, 0.92rem);
+      color: var(--muted); max-width: 570px;
+      margin-bottom: 2.5rem; line-height: 1.95;
+    }
+    .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.7rem 1.4rem; font-family: var(--font-mono);
+      font-size: 11px; letter-spacing: 0.1em;
+      text-decoration: none; border-radius: 2px; transition: all 0.2s; cursor: none;
+    }
+    .btn-primary { background: var(--accent); color: var(--bg); font-weight: 700; }
+    .btn-primary:hover { background: var(--bright); box-shadow: 0 4px 20px rgba(139,94,60,0.3); }
+    .btn-ghost { border: 1px solid var(--border); color: var(--text); background: transparent; }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+    .hero-scroll {
+      position: absolute; bottom: 3rem; left: 2.5rem;
+      display: flex; align-items: center; gap: 0.75rem;
+      font-size: 10px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase;
+    }
+    .scroll-line { width: 40px; height: 1px; background: var(--muted); animation: sp 2s ease-in-out infinite; }
+    @keyframes sp { 0%,100%{width:40px;opacity:1} 50%{width:16px;opacity:0.3} }
+
+    /* SECTION LABELS */
+    .section-label {
+      font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 0.6rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .section-label::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--accent); }
+    h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      font-weight: 800; letter-spacing: -0.03em;
+      color: var(--bright); margin-bottom: 3rem; line-height: 1;
+    }
+
+    /* TERMINAL */
+    .terminal-block {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 4px; overflow: hidden; margin-bottom: 3rem;
+    }
+    .terminal-bar {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.6rem 1rem; background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-red { background: #e05c4b; } .dot-yellow { background: #d4a017; } .dot-green { background: #4a7c59; }
+    .terminal-title { font-size: 11px; color: var(--muted); margin-left: 0.5rem; }
+    .terminal-body { padding: 1.25rem 1.5rem; font-size: 12px; line-height: 2.1; }
+    .tcmd { color: var(--muted); }
+    .tcmd::before { content: '> '; color: var(--accent2); font-weight: 700; }
+    .tout { color: var(--text); padding-left: 1rem; }
+    .tout-accent { color: var(--accent); font-weight: 500; }
+    .tout-green { color: var(--accent2); font-weight: 500; }
+    .tout-purple { color: var(--accent4); font-weight: 500; }
+
+    /* ABOUT */
+    .about-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 4rem; align-items: start; }
+    .about-text p { color: var(--text); line-height: 1.95; margin-bottom: 1rem; font-size: 12.5px; }
+    .about-text p strong { color: var(--accent); font-weight: 600; }
+    .about-text p em { color: var(--accent2); font-style: normal; font-weight: 500; }
+    .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+    .stat { background: var(--bg2); padding: 1.5rem; transition: background 0.2s; }
+    .stat:hover { background: var(--bg3); }
+    .stat-number { font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; color: var(--bright); line-height: 1; margin-bottom: 0.25rem; }
+    .stat-number span { color: var(--accent); }
+    .stat-label { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+
+    /* EXPERIENCE TIMELINE */
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: ''; position: absolute; left: 0; top: 8px; bottom: 8px;
+      width: 1px; background: linear-gradient(to bottom, var(--accent), transparent);
+    }
+    .timeline-item { position: relative; margin-bottom: 3.5rem; padding-left: 2rem; }
+    .timeline-item::before {
+      content: ''; position: absolute; left: -2.45rem; top: 8px;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent); box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--accent);
+    }
+    .timeline-item:nth-child(2)::before { background: var(--accent2); box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--accent2); }
+    .timeline-item:nth-child(3)::before { background: var(--accent3); box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--accent3); }
+    .timeline-item:nth-child(4)::before { background: var(--accent4); box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--accent4); }
+    .timeline-item:nth-child(5)::before { background: var(--gold); box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--gold); }
+
+    .timeline-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.3rem; flex-wrap: wrap; gap: 0.5rem; }
+    .job-title { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: var(--bright); }
+    .job-period {
+      font-size: 10px; padding: 0.2rem 0.7rem; border-radius: 20px; white-space: nowrap;
+      color: var(--accent); background: rgba(139,94,60,0.1); border: 1px solid rgba(139,94,60,0.25);
+    }
+    .timeline-item:nth-child(2) .job-period { color: var(--accent2); background: rgba(74,124,89,0.1); border-color: rgba(74,124,89,0.25); }
+    .timeline-item:nth-child(3) .job-period { color: var(--accent3); background: rgba(184,74,58,0.1); border-color: rgba(184,74,58,0.25); }
+    .timeline-item:nth-child(4) .job-period { color: var(--accent4); background: rgba(107,91,158,0.1); border-color: rgba(107,91,158,0.25); }
+    .timeline-item:nth-child(5) .job-period { color: var(--gold); background: rgba(122,92,0,0.1); border-color: rgba(122,92,0,0.25); }
+
+    .job-company { font-size: 12px; color: var(--muted); margin-bottom: 0.75rem; }
+    .job-highlights { list-style: none; padding: 0; }
+    .job-highlights li {
+      font-size: 12px; color: var(--text); line-height: 1.8;
+      margin-bottom: 0.4rem; padding-left: 1.2rem; position: relative;
+    }
+    .job-highlights li::before { content: '▸'; position: absolute; left: 0; font-size: 10px; top: 4px; color: var(--accent); }
+    .timeline-item:nth-child(2) .job-highlights li::before { color: var(--accent2); }
+    .timeline-item:nth-child(3) .job-highlights li::before { color: var(--accent3); }
+    .timeline-item:nth-child(4) .job-highlights li::before { color: var(--accent4); }
+    .timeline-item:nth-child(5) .job-highlights li::before { color: var(--gold); }
+    .job-highlights li strong { color: var(--bright); font-weight: 600; }
+
+    .job-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
+    .tag {
+      font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--muted); border: 1px solid var(--border);
+      padding: 0.15rem 0.55rem; border-radius: 2px; transition: all 0.2s;
+      background: var(--bg2);
+    }
+    .tag:hover { color: var(--accent); border-color: var(--accent); background: rgba(139,94,60,0.07); }
+
+    /* PROJECTS */
+    .projects-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1px; background: var(--border); border: 1px solid var(--border);
+    }
+    .project-card {
+      background: var(--bg2); padding: 2rem;
+      position: relative; overflow: hidden; transition: background 0.3s; cursor: none;
+    }
+    .project-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease;
+    }
+    .project-card:nth-child(1)::before { background: var(--accent); }
+    .project-card:nth-child(2)::before { background: var(--accent2); }
+    .project-card:nth-child(3)::before { background: var(--accent3); }
+    .project-card:nth-child(4)::before { background: var(--accent4); }
+    .project-card:hover { background: var(--bg3); }
+    .project-card:hover::before { transform: scaleX(1); }
+
+    .project-index { font-size: 11px; color: var(--border); font-weight: 700; margin-bottom: 0.75rem; letter-spacing: 0.1em; }
+    .project-name { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: var(--bright); margin-bottom: 0.5rem; line-height: 1.2; }
+    .project-context { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.75rem; color: var(--accent); }
+    .project-card:nth-child(2) .project-context { color: var(--accent2); }
+    .project-card:nth-child(3) .project-context { color: var(--accent3); }
+    .project-card:nth-child(4) .project-context { color: var(--accent4); }
+    .project-desc { font-size: 12px; color: var(--muted); line-height: 1.8; margin-bottom: 1.5rem; }
+    .project-footer { display: flex; justify-content: space-between; align-items: flex-end; }
+    .project-stack { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .stack-badge {
+      font-size: 10px; padding: 0.15rem 0.5rem; border-radius: 2px;
+      color: var(--accent); border: 1px solid rgba(139,94,60,0.3); background: rgba(139,94,60,0.08);
+    }
+    .project-card:nth-child(2) .stack-badge { color: var(--accent2); border-color: rgba(74,124,89,0.3); background: rgba(74,124,89,0.08); }
+    .project-card:nth-child(3) .stack-badge { color: var(--accent3); border-color: rgba(184,74,58,0.3); background: rgba(184,74,58,0.08); }
+    .project-card:nth-child(4) .stack-badge { color: var(--accent4); border-color: rgba(107,91,158,0.3); background: rgba(107,91,158,0.08); }
+    .project-metric { font-size: 10px; color: var(--muted); text-align: right; line-height: 1.5; }
+    .project-metric strong { display: block; font-family: var(--font-display); font-size: 1.1rem; color: var(--bright); }
+
+    /* SKILLS */
+    .skills-layout {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1px; background: var(--border); border: 1px solid var(--border);
+    }
+    .skill-group { background: var(--bg2); padding: 1.75rem; }
+    .skill-group-title {
+      font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+      margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;
+      color: var(--accent);
+    }
+    .skill-group:nth-child(2) .skill-group-title { color: var(--accent2); }
+    .skill-group:nth-child(3) .skill-group-title { color: var(--accent3); }
+    .skill-group:nth-child(4) .skill-group-title { color: var(--accent4); }
+    .skill-group:nth-child(5) .skill-group-title { color: var(--gold); }
+    .skill-group-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .skill-list { display: flex; flex-direction: column; gap: 0.7rem; }
+    .skill-item { display: flex; flex-direction: column; gap: 0.3rem; }
+    .skill-meta { display: flex; justify-content: space-between; align-items: center; }
+    .skill-name { font-size: 12px; color: var(--text); }
+    .skill-level { font-size: 9px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+    .skill-bar { height: 2px; background: var(--border); border-radius: 1px; overflow: hidden; }
+    .skill-fill {
+      height: 100%; border-radius: 1px;
+      background: var(--accent);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .skill-group:nth-child(2) .skill-fill { background: var(--accent2); }
+    .skill-group:nth-child(3) .skill-fill { background: var(--accent3); }
+    .skill-group:nth-child(4) .skill-fill { background: var(--accent4); }
+    .skill-group:nth-child(5) .skill-fill { background: var(--gold); }
+
+    /* FOOTER */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 2.5rem; max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-left { font-size: 12px; color: var(--muted); }
+    .footer-left strong { color: var(--accent); }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a { font-size: 11px; color: var(--muted); text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--accent); }
+
+    @media (max-width: 768px) {
+      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .skills-layout { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      h1 { font-size: 2.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo"><span>~/</span>sathish-gilakathula</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+    </ul>
+    <div class="nav-status">
+      <div class="status-dot"></div>
+      Open to opportunities
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-tag">Sr. API Developer · Backend Engineer · Dallas, TX</div>
+    <h1>
+      Sathish<br />
+      <span class="dim">Gilakathula</span><span class="accent-text">.</span>
+    </h1>
+    <p class="hero-role">Node.js · TypeScript · Distributed Systems · Cloud-Native · AI-Assisted Dev</p>
+    <p class="hero-sub">
+      8+ years building high-scale backend platforms and mission-critical APIs across
+      retail, finance, and aviation. Currently at Walmart engineering last-mile delivery
+      infrastructure handling 1M+ requests/day on Azure Cloud.
+    </p>
+    <div class="hero-cta">
+      <a href="#experience" class="btn btn-primary">View Experience →</a>
+      <a href="mailto:sathish.gilakathula@hotmail.com" class="btn btn-ghost">Get In Touch</a>
+    </div>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      Scroll
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-label">01 — About</div>
+    <h2>Who I am</h2>
+
+    <div class="terminal-block">
+      <div class="terminal-bar">
+        <div class="dot dot-red"></div>
+        <div class="dot dot-yellow"></div>
+        <div class="dot dot-green"></div>
+        <span class="terminal-title">whoami.sh</span>
+      </div>
+      <div class="terminal-body">
+        <div class="tcmd">whoami</div>
+        <div class="tout"><span class="tout-accent">sathish.gilakathula</span> — Sr. API Developer, 8+ years in backend engineering</div>
+        <div class="tcmd">cat contact.txt</div>
+        <div class="tout">Dallas, TX 75234 · sathish.gilakathula@hotmail.com · +1 (720) 257-4701</div>
+        <div class="tcmd">cat specializations.txt</div>
+        <div class="tout">Node.js APIs · Distributed Systems · AWS &amp; Azure · Event-Driven Arch · Microservices</div>
+        <div class="tcmd">cat ai_stack.txt</div>
+        <div class="tout"><span class="tout-purple">OpenAI APIs · GitHub Copilot · Cursor IDE · Claude · Prompt Engineering</span></div>
+        <div class="tcmd">echo $EDUCATION</div>
+        <div class="tout">M.S. Information Technology — Colorado Technical University (GPA: 3.59/4.0)</div>
+        <div class="tcmd">echo $STATUS</div>
+        <div class="tout tout-green">Open to senior backend / API engineering roles</div>
+      </div>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          I'm a senior backend engineer who specializes in <strong>high-scale RESTful APIs</strong> and
+          <strong>distributed systems</strong> built with Node.js and TypeScript. My production systems handle
+          hundreds of millions of requests across retail, fintech, and aviation.
+        </p>
+        <p>
+          My work lives at the intersection of <strong>performance engineering</strong>,
+          <strong>cloud-native architecture</strong>, and developer productivity. I'm experienced migrating
+          Java monoliths to <em>Node.js microservices</em>, building Kafka event pipelines, and standing up
+          observability systems that cut MTTR from 90 minutes to 15.
+        </p>
+        <p>
+          I'm an early adopter of <strong>AI-assisted development</strong> — using GitHub Copilot, Cursor,
+          and Claude to accelerate delivery 2–3x while keeping code quality and test coverage high. I also
+          build <em>AI-powered backend services</em> integrating OpenAI APIs and LLM patterns into
+          production systems.
+        </p>
+        <p>
+          Beyond code, I mentor junior engineers, drive TDD and code review culture, and advocate for
+          strong <strong>API design standards</strong> — versioning, OpenAPI docs, and consistent error handling.
+        </p>
+      </div>
+      <div class="about-stats">
+        <div class="stat">
+          <div class="stat-number">8<span>+</span></div>
+          <div class="stat-label">Years experience</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">1<span>M+</span></div>
+          <div class="stat-label">Req / day · Walmart</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">$2<span>M+</span></div>
+          <div class="stat-label">Fraud prevented / yr</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">70<span>%</span></div>
+          <div class="stat-label">Cloud cost cut</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="section-label">02 — Experience</div>
+    <h2>Where I've worked</h2>
+
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-header">
+          <div class="job-title">Sr. Backend Developer</div>
+          <div class="job-period">Oct 2022 — Present</div>
+        </div>
+        <div class="job-company">Walmart · Sunnyvale, CA · Driver Management &amp; Partner Portal Platform</div>
+        <ul class="job-highlights">
+          <li>Architected <strong>15+ production RESTful APIs</strong> (Java/Spring Boot + Node.js/TypeScript) processing <strong>500K+ daily transactions</strong> across Walmart's last-mile delivery ecosystem.</li>
+          <li>Scaled Modernized Driver Transport Experience APIs to <strong>1M+ requests/day</strong>, reducing avg response time <strong>42%</strong> via async processing and connection pooling.</li>
+          <li>Re-engineered insurer-verification scheduler to event-driven SQS-triggered Azure serverless functions — slashing <strong>CloudWatch costs by 70%</strong>.</li>
+          <li>Built real-time fraud-detection microservice with Kafka Streams, flagging <strong>98% of fraudulent accounts within 5 seconds</strong> and preventing <strong>$2M+ in annual losses</strong>.</li>
+          <li>Introduced distributed tracing (New Relic + Grafana + Datadog/Splunk), reducing MTTR from <strong>90 min → 15 min</strong> across all API services.</li>
+          <li>Implemented CI/CD pipelines with Jenkins + Azure DevOps, reducing deployment cycle time by <strong>60%</strong> with automated testing gates.</li>
+          <li>Established unit and integration testing frameworks achieving <strong>85%+ code coverage</strong> using Jest and JUnit.</li>
+          <li>Mentored 2 junior engineers on clean code practices, design patterns, and TDD methodology.</li>
+        </ul>
+        <div class="job-tags">
+          <span class="tag">Node.js</span><span class="tag">TypeScript</span><span class="tag">Java</span>
+          <span class="tag">Spring Boot</span><span class="tag">Kafka</span><span class="tag">Azure</span>
+          <span class="tag">SQS</span><span class="tag">New Relic</span><span class="tag">Jenkins</span>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-header">
+          <div class="job-title">Sr. API Developer</div>
+          <div class="job-period">Apr 2021 — Oct 2022</div>
+        </div>
+        <div class="job-company">United Airlines · Chicago, IL · STM Modernization</div>
+        <ul class="job-highlights">
+          <li>Designed serverless API architecture on AWS (API Gateway + Lambda) with IAM security — achieving <strong>99.9% uptime</strong> and <strong>sub-200ms response times</strong>.</li>
+          <li>Optimized DB queries and API response times through query plan analysis and concurrency management, improving throughput <strong>35%</strong> with ACID consistency.</li>
+          <li>Built ReactJS-integrated Node.js/TypeScript client solutions for real-time flight and crew management dashboards.</li>
+          <li>Deployed all infrastructure via Terraform + Serverless Framework for repeatable, version-controlled multi-environment provisioning.</li>
+          <li>Designed automated monitoring with Datadog and Splunk, proactively resolving bottlenecks before production impact.</li>
+        </ul>
+        <div class="job-tags">
+          <span class="tag">AWS Lambda</span><span class="tag">API Gateway</span><span class="tag">Node.js</span>
+          <span class="tag">TypeScript</span><span class="tag">Terraform</span><span class="tag">React</span><span class="tag">Datadog</span>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-header">
+          <div class="job-title">Sr. API Developer</div>
+          <div class="job-period">Mar 2020 — Apr 2021</div>
+        </div>
+        <div class="job-company">Fidelity Investments · Covington, KY · Legacy Modernization &amp; Financial Data Ecosystem</div>
+        <ul class="job-highlights">
+          <li>Led migration of legacy Java monolith to Node.js/Express.js microservices — <strong>3x scalability</strong> improvement; deployment time from hours to minutes.</li>
+          <li>Re-engineered Java REST services with async/await patterns, reducing resource consumption by <strong>40%</strong>.</li>
+          <li>Deployed AWS serverless infrastructure (Lambda, API Gateway, CloudWatch, IAM) supporting high-availability financial data workflows.</li>
+          <li>Built React SPAs for financial advisors and operations teams integrated with RESTful backend services.</li>
+          <li>Utilized Apache Camel for complex enterprise integration workflows with stored procedures and message routing.</li>
+        </ul>
+        <div class="job-tags">
+          <span class="tag">Node.js</span><span class="tag">Express.js</span><span class="tag">AWS</span>
+          <span class="tag">React</span><span class="tag">Terraform</span><span class="tag">MongoDB</span><span class="tag">Apache Camel</span>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-header">
+          <div class="job-title">API Developer</div>
+          <div class="job-period">Sep 2018 — Mar 2020</div>
+        </div>
+        <div class="job-company">7-Eleven Inc · Dallas, TX · Master Data &amp; Promotional Services (13,000+ stores)</div>
+        <ul class="job-highlights">
+          <li>Built microservices with Fastify + TypeScript achieving <strong>sub-100ms response times</strong> for Item General and Location Services.</li>
+          <li>Developed high-throughput CRUD API services in <strong>Golang</strong>, leveraging Go's concurrency model for bulk parallel data operations.</li>
+          <li>Implemented serverless applications with AWS Lambda and GraphQL for flexible, client-driven data querying.</li>
+          <li>Optimized database queries through index tuning and query plan analysis, with automated monitoring via New Relic and CloudWatch.</li>
+        </ul>
+        <div class="job-tags">
+          <span class="tag">Fastify</span><span class="tag">TypeScript</span><span class="tag">Golang</span>
+          <span class="tag">GraphQL</span><span class="tag">AWS Lambda</span><span class="tag">MongoDB</span><span class="tag">New Relic</span>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-header">
+          <div class="job-title">Software Engineer</div>
+          <div class="job-period">Jun–Sep 2018 · Jul–Aug 2018</div>
+        </div>
+        <div class="job-company">RIG Enterprise Applications &amp; TUEchain INC · Dallas, TX / Seattle, WA</div>
+        <ul class="job-highlights">
+          <li>Built full-stack HR/immigration management app using Node.js + Express deployed on Azure, with JWT-based authentication and XML SOA integration.</li>
+          <li>Designed and developed REST web services for TUEchain blockchain web + mobile app using Node.js with Swagger UI documentation.</li>
+          <li>Built TUEchain frontend with ReactJS integrating with REST APIs for real-time blockchain data display.</li>
+          <li>Achieved <strong>30% reduction in reported bugs</strong> through cross-functional defect resolution at RIG Enterprise.</li>
+        </ul>
+        <div class="job-tags">
+          <span class="tag">Node.js</span><span class="tag">Express</span><span class="tag">React</span>
+          <span class="tag">Azure</span><span class="tag">JWT</span><span class="tag">Swagger</span><span class="tag">Blockchain</span>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-header">
+          <div class="job-title">Developer</div>
+          <div class="job-period">Aug 2017 — Jun 2018</div>
+        </div>
+        <div class="job-company">Resource Informatic Group Inc · Dallas, TX · Enterprise Consulting</div>
+        <ul class="job-highlights">
+          <li>Designed RESTful web services with Java Spring Boot, Hibernate ORM, and Node.js for enterprise client data management.</li>
+          <li>Delivered <strong>25% improvement</strong> in project delivery timelines through Agile methodology with 2-week sprint cycles.</li>
+          <li>Built dynamic AngularJS interfaces with inline data grids, MVC architecture, and Bootstrap responsive design.</li>
+          <li>Managed database operations on AWS with connection pooling, query optimization, and automated backup strategies.</li>
+        </ul>
+        <div class="job-tags">
+          <span class="tag">Java</span><span class="tag">Spring Boot</span><span class="tag">Node.js</span>
+          <span class="tag">AngularJS</span><span class="tag">AWS</span><span class="tag">Swagger</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-label">03 — Projects</div>
+    <h2>Highlights &amp; builds</h2>
+
+    <div class="projects-grid">
+
+      <div class="project-card">
+        <div class="project-index">001</div>
+        <div class="project-name">Fraud Detection Engine</div>
+        <div class="project-context">Walmart · Real-time Kafka Streams</div>
+        <div class="project-desc">
+          Real-time fraud detection microservice processing driver account events via Kafka Streams
+          and complex event processing. Flags fraudulent accounts within 5 seconds at 98% accuracy,
+          preventing $2M+ in estimated annual losses across Walmart's last-mile delivery network.
+        </div>
+        <div class="project-footer">
+          <div class="project-stack">
+            <span class="stack-badge">Kafka Streams</span>
+            <span class="stack-badge">Node.js</span>
+            <span class="stack-badge">Azure</span>
+          </div>
+          <div class="project-metric">
+            <strong>$2M+</strong>
+            prevented/yr
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-index">002</div>
+        <div class="project-name">Serverless Migration Pipeline</div>
+        <div class="project-context">Fidelity · Java → Node.js Microservices</div>
+        <div class="project-desc">
+          Led full migration of legacy Java monolith to event-driven Node.js microservices on AWS.
+          Achieved 3x scalability, 40% reduction in resource consumption, and deployment times
+          from hours to minutes using Terraform IaC and Serverless Framework.
+        </div>
+        <div class="project-footer">
+          <div class="project-stack">
+            <span class="stack-badge">AWS Lambda</span>
+            <span class="stack-badge">Terraform</span>
+            <span class="stack-badge">Node.js</span>
+          </div>
+          <div class="project-metric">
+            <strong>3x</strong>
+            scalability
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-index">003</div>
+        <div class="project-name">AI-Powered Backend Agent</div>
+        <div class="project-context">Personal · OpenAI API Integration</div>
+        <div class="project-desc">
+          Backend service integrating OpenAI APIs with prompt engineering patterns to auto-generate
+          API documentation, suggest optimizations, and perform intelligent code review — accelerating
+          development velocity by 2–3x while maintaining high test coverage.
+        </div>
+        <div class="project-footer">
+          <div class="project-stack">
+            <span class="stack-badge">OpenAI API</span>
+            <span class="stack-badge">Node.js</span>
+            <span class="stack-badge">TypeScript</span>
+          </div>
+          <div class="project-metric">
+            <strong>2–3x</strong>
+            faster delivery
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-index">004</div>
+        <div class="project-name">STM Modernization APIs</div>
+        <div class="project-context">United Airlines · AWS Serverless</div>
+        <div class="project-desc">
+          Serverless REST + SOAP API architecture for United Airlines' STM modernization initiative.
+          Achieved 99.9% uptime and sub-200ms response times, with a 35% throughput improvement
+          via query plan optimization and concurrency management.
+        </div>
+        <div class="project-footer">
+          <div class="project-stack">
+            <span class="stack-badge">AWS</span>
+            <span class="stack-badge">TypeScript</span>
+            <span class="stack-badge">IAM</span>
+          </div>
+          <div class="project-metric">
+            <strong>99.9%</strong>
+            uptime
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-label">04 — Skills</div>
+    <h2>What I use</h2>
+
+    <div class="skills-layout">
+
+      <div class="skill-group">
+        <div class="skill-group-title">Languages</div>
+        <div class="skill-list">
+          <div class="skill-item">
+            <div class="skill-meta"><span class="skill-name">TypeScript / JavaScript</span><span class="skill-level">Expert</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-w="0.97"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-meta"><span class="skill-name">Java</span><span class="skill-level">Expert</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-w="0.90"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-meta"><span class="skill-name">Go</span><span class="skill-level">Proficient</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-w="0.78"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-meta"><span class="skill-name">SQL</span><span class="skill-level">Proficient</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-w="0.85"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-group-title">Backend & APIs</div>
+        <div class="skill-list">
+          <div class="skill-item">
+            <div class="skill-meta"><span class="skill-name">Node.js / Express / Fastify</span><span class="skill-level">Expert</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-w="0.97"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-meta"><span class="skill-name">REST / GraphQL / SOAP</span><span class="skill-level">Expert</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-w="0.94"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-meta"><span class="skill-name">Spring Boot / Apache Camel</span><span class="skill-level">Proficient</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-w="0.86"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-meta"><span class="skill-name">JWT / OAuth / IAM / RBAC</span><span class="skill-level">Expert</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-w="0.92"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-group-title">Cloud & Infrastructure</div>
+        <div class="skill-list">
+          <div class="skill-item">
+            <div class="skill-meta"><span class="skill-name">AWS (Lambda, API GW, SQS…)</span><span class="skill-level">Expert</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-w="0.93"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-meta"><span class="skill-name">Azure (Functions, Service Bus…)</span><span class="skill-level">Proficient</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-w="0.85"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-meta"><span class="skill-name">Terraform / Serverless Framework</span><span class="skill-level">Proficient</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-w="0.88"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-meta"><span class="skill-name">Docker / Kubernetes</span><span class="skill-level">Proficient</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-w="0.82"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-group-title">Data & Messaging</div>
+        <div class="skill-list">
+          <div class="skill-item">
+            <div class="skill-meta"><span class="skill-name">MongoDB / DynamoDB</span><span class="skill-level">Expert</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-w="0.91"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-meta"><span class="skill-name">PostgreSQL / Oracle / SQL Server</span><span class="skill-level">Proficient</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-w="0.86"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-meta"><span class="skill-name">Kafka / SQS / SNS / EventBridge</span><span class="skill-level">Proficient</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-w="0.88"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-meta"><span class="skill-name">Redis / Caching Strategies</span><span class="skill-level">Proficient</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-w="0.82"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <div class="skill-group-title">Observability & AI Dev</div>
+        <div class="skill-list">
+          <div class="skill-item">
+            <div class="skill-meta"><span class="skill-name">Datadog / New Relic / Splunk</span><span class="skill-level">Expert</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-w="0.90"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-meta"><span class="skill-name">OpenAI API / LLM Integration</span><span class="skill-level">Proficient</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-w="0.82"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-meta"><span class="skill-name">GitHub Copilot / Cursor IDE</span><span class="skill-level">Expert</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-w="0.95"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-meta"><span class="skill-name">React / Vue / AngularJS</span><span class="skill-level">Proficient</span></div>
+            <div class="skill-bar"><div class="skill-fill" data-w="0.78"></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-left">
+      <strong>Sathish Gilakathula</strong> · Sr. API Developer · Dallas, TX
+    </div>
+    <div class="footer-links">
+      <a href="https://linkedin.com" target="_blank">LinkedIn</a>
+      <a href="mailto:sathish.gilakathula@hotmail.com">Email</a>
+      <a href="tel:+17202574701">+1 (720) 257-4701</a>
+    </div>
+  </footer>
+
+  <script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx - 4 + 'px';
+      cursor.style.top = my - 4 + 'px';
+    });
+    (function animRing() {
+      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+      ring.style.left = rx - 16 + 'px'; ring.style.top = ry - 16 + 'px';
+      requestAnimationFrame(animRing);
+    })();
+
+    // Skill bar animations — trigger immediately + on scroll
+    function animateSkills(group) {
+      group.querySelectorAll('.skill-fill').forEach((bar, i) => {
+        const w = parseFloat(bar.dataset.w) || 0.75;
+        setTimeout(() => { bar.style.transform = `scaleX(${w})`; }, i * 80);
+      });
+    }
+
+    const skillObs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) animateSkills(entry.target);
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.skill-group').forEach(g => {
+      skillObs.observe(g);
+      // also fire after a short delay in case already in viewport
+      setTimeout(() => {
+        const rect = g.getBoundingClientRect();
+        if (rect.top < window.innerHeight) animateSkills(g);
+      }, 300);
+    });
+
+    // Active nav highlight
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+      navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+    });
+  </script>
+</body>
+</html>
